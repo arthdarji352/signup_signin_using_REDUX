@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginData } from "../../../redux/action";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const reactImage =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png";
@@ -22,21 +24,38 @@ function Login() {
 
   console.log("userdata in loginpage", allUsers);
 
+  const loginToast = () =>
+    toast.success("Login SuccessFully", {
+      position: "top-center",
+      autoClose: 1000,
+      theme: "colored",
+    });
+
+  const wrongToast = () =>
+    toast.error("wrong Email or Password", {
+      position: "top-center",
+      autoClose: 1000,
+      theme: "dark",
+    });
+
   const handleLogin = (e) => {
     e.preventDefault();
+
     const loginUser = allUsers.find(
       (user) => user.email === input.email && user.password === input.password
     );
 
     if (loginUser) {
+      loginToast();
       const auth = loginUser;
       dispatch(loginData(auth));
 
-      alert("login successfully");
+      // alert("login successfully");
 
-      navigate("/userdetail");
+      // navigate("/userdetail");
     } else {
-      alert("wrong Email or Password");
+      // alert("wrong Email or Password");
+      wrongToast();
     }
   };
 
@@ -121,6 +140,7 @@ function Login() {
                         className="form-control btn btn-primary mt-3"
                       />
                     </div>
+                    <ToastContainer />
                   </form>
                 </div>
                 <div className="col-md-6">

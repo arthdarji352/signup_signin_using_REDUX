@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { registerData } from "../../../redux/action";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const reactImage =
   "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png";
@@ -12,12 +14,15 @@ function Register() {
   const allData = useSelector((state) => state.allData.users);
   console.warn("data in main component", allData);
 
+  // const idCheck = allData.map((data, index) => index);
+
   // const navigate = useNavigate();
   const [input, setInput] = useState({
     name: "",
     email: "",
     password: "",
   });
+
   const [errors, setError] = useState({
     name: "",
     email: "",
@@ -78,18 +83,44 @@ function Register() {
 
   console.log(emailCheck);
 
+  const registerToast = () =>
+    toast.success("Register SuccessFully", {
+      position: "top-center",
+      autoClose: 1000,
+      // theme: "colored",
+    });
+  const emailToast = () =>
+    toast.error("Email Already there", {
+      position: "top-center",
+      autoClose: 1000,
+      theme: "dark",
+    });
+  const requireFieldToast = () =>
+    toast.error("please enter All fields", {
+      position: "top-center",
+      autoClose: 1000,
+      theme: "colored",
+    });
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (input.name !== "" && input.email !== "" && input.password !== "") {
       if (!emailCheck) {
-        dispatch(registerData(input));
-        alert("data register successfully");
+        const singleData = {
+          ...input,
+          id: new Date().getTime().toString(),
+        };
+        dispatch(registerData(singleData));
+        // alert("data register successfully");
+        // console
+        registerToast();
       } else {
-        alert("email already there");
+        emailToast();
       }
     } else {
-      alert(" please enter require fields");
+      requireFieldToast();
+      // alert(" please enter all fields");
     }
 
     setInput({
@@ -167,9 +198,11 @@ function Register() {
                       <input
                         type="submit"
                         className="form-control btn btn-primary mt-3"
+                        // onClick={notify}
                         // disabled={!validate()}
                         // disabled={isSubmit}
                       />
+                      <ToastContainer />
                       {/* <SubmitButton /> */}
                     </div>
                   </form>
